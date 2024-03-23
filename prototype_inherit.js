@@ -2,10 +2,10 @@
 function create_object(o) {
   function F() {}
   F.prototype = o;
-  return new F(); // o를 부모로 하는 객체 반환
+  return new F(); // o를 부모로 하는 F 객체 반환
 }
 
-var Person = {
+var person = {
   name: "yeh",
   getName: function () {
     return this.name;
@@ -15,19 +15,20 @@ var Person = {
   },
 };
 
-var me = create_object(Person);
-me.setName("yeh");
-console.log(me);
+console.log("\n프로토타입 체이닝을 활용한 상속");
+var student = create_object(person);
+console.dir(student);
 
 /* 자식 객체의 프로퍼티 확장 */
 // 직접 프로퍼티를 추가해도 되지만 코드가 지저분해짐
-me.setBirth = function (num) {
-  this.Birth = num;
+console.log("\n자식 객체의 프로퍼티 확장");
+student.setAge = function (age) {
+  this.age = age;
 };
-me.setBirth(1992);
-me.getBirth = function () {
-  return this.Birth;
+student.getAge = function () {
+  return this.age;
 };
+console.dir(student);
 
 // 모듈화(jQuery)
 jQuery.extend = jQuery.fn.extend = function (obj, prop) {
@@ -42,24 +43,21 @@ jQuery.extend = jQuery.fn.extend = function (obj, prop) {
   return obj;
 };
 
-// extend() 예제
+// extend() 실습
+console.log("\nextend() 실습");
 function extend(obj, prop) {
   if (!prop) {
     prop = obj;
     obj = this;
   }
-  console.log("------------");
-  console.log(obj);
-  console.log(prop);
   for (var i in prop) {
-    console.log(obj[i], prop[i]);
     obj[i] = prop[i];
   }
-
   return obj;
 }
 
-var student = create_object(me);
+var extended_person = create_object(person);
+console.log("extend 전:", extended_person);
 var added = {
   setLocation: function (location) {
     this.location = location;
@@ -68,6 +66,8 @@ var added = {
     return this.location;
   },
 };
+extend(extended_person, added);
+console.log("extend 후:", extended_person);
 
 var another_added = {
   setGender: function (value) {
@@ -77,11 +77,3 @@ var another_added = {
     return this.gender;
   },
 };
-
-console.log("\nextend 예제");
-console.log(student);
-extend(student, added);
-student.setLocation("seoul");
-console.log(student);
-extend(student, another_added);
-console.log(student);
